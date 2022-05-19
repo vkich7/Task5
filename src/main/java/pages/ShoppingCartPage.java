@@ -4,16 +4,21 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
+import java.util.List;
+
 public class ShoppingCartPage extends BasePage {
 
-    @FindBy(xpath = "//h1[@class='checkout-header__heading']")
+    @FindBy(xpath = "//h1[@class='main-title']")
     private WebElement shoppingCartTitle;
 
-    @FindBy(xpath = "//button[@class='checkout-order-summary__continue-btn']")
-    private WebElement checkoutButton;
+    @FindBy(xpath = "//div[@class=\"empty-cart\"]")
+    private WebElement emptyCart;
 
-    @FindBy(xpath = "//div[contains(@class, 'shopping-cart-item--shopping-cart-your-order')]|//section[@data-code or @data-product-code]")
-    private WebElement shoppingCartItem;
+    @FindBy(xpath = "//button[@class='call-to-action btn btn--large btn--primary']")
+    private WebElement goToCheckoutButton;
+
+    @FindBy(xpath = "//button[@class='fake-link']//span[text()='Remove']")
+    private List<WebElement> removeButtons;
 
     public ShoppingCartPage(WebDriver driver) {
         super(driver);
@@ -27,12 +32,16 @@ public class ShoppingCartPage extends BasePage {
         return shoppingCartTitle.isDisplayed();
     }
 
-    public void clickCheckoutButton() {
-        checkoutButton.click();
+    public boolean isCartEmpty()
+    {
+        return emptyCart.isDisplayed();
     }
 
-    public WebElement getShoppingCartItem() {
-        return shoppingCartItem;
+    public WebElement getCheckoutButton() {
+        return goToCheckoutButton;
     }
 
+    public List<WebElement> getRemoveButtons() {
+        return removeButtons;
+    }
 }

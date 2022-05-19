@@ -6,7 +6,7 @@ import org.openqa.selenium.support.FindBy;
 
 public class ItemPage extends BasePage{
     @FindBy(xpath = "//a[@id='isCartBtn_btn']")
-    private WebElement buyButton;
+    private WebElement addToCartButton;
     @FindBy(xpath = "//a[@class='gh-eb-li-a gh-rvi-menu' and @title='My eBay']")
     private WebElement cart;
     @FindBy(xpath = "//i[@id='gh-cart-n']")
@@ -16,8 +16,8 @@ public class ItemPage extends BasePage{
         super(driver);
     }
 
-    public void clickBuyButton() {
-        buyButton.click();
+    public void clickAddToCartButton() {
+        addToCartButton.click();
     }
 
     public String getAmountOfProductsInCart() {

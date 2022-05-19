@@ -18,9 +18,9 @@ public class SearchResultsPage extends BasePage {
         super(driver);
     }
 
-    public void clickGoodsListOnFirstProduct() {
+    public void clickGoodsListOnProduct(int number) {
         JavascriptExecutor executor = (JavascriptExecutor) driver;
-        executor.executeScript("arguments[0].click();", goodsListIcons.get(1));
+        executor.executeScript("arguments[0].click();", goodsListIcons.get(number));
     }
     public int getGoodsListCount()
     {

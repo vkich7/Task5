@@ -4,47 +4,51 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.Select;
 
 public class HomePage extends BasePage {
 
-    @FindBy(xpath = "//header[contains(@class, 'global-header global-header--sticky') or @class='page-header']")
+    @FindBy(xpath = "//header[@id='gh']")
     private WebElement header;
 
-    @FindBy(xpath = "//footer")
+    @FindBy(xpath = "//footer[@id='glbfooter']")
     private WebElement footer;
 
-    @FindBy(xpath = ".//a[@class='global-header__main-bar__utility-nav__user-cart__link']")
+    @FindBy(xpath = "//a[@class='gh-eb-li-a gh-rvi-menu' and contains(@aria-label,\"cart\")]")
     private WebElement cartIcon;
 
-    @FindBy(xpath = ".//a[contains(@class, 'header-top-bar__input__language')]/span")
-    private WebElement languageButton;
-
-    @FindBy(xpath = "//button[contains(@class,'enterprise-account__button_sign-in')]")
+    @FindBy(xpath = "//span[@id='gh-ug']/a[contains(text(), 'Sign in')]")
     private WebElement signInButton;
 
-    @FindBy(xpath = "//button[contains(@class, 'enterprise-account__button_register')]")
+    @FindBy(xpath = "//span[@id='gh-ug-flex']/a[contains(text(), 'register')]")
     private WebElement registerButton;
 
-    @FindBy(xpath = "//div[@class='gigya-screen-dialog-main']")
-    private WebElement signInPopup;
+    @FindBy(xpath = "//h1[contains(text(), 'Create an account')]")
+    private WebElement registerPopup;
 
-    @FindBy(xpath = ".//input[@name='username'][@placeholder='Email *']")
+    @FindBy(xpath = "//div[@class='target-icaptcha-slot']")
+    private WebElement captchaDialog;
+
+    @FindBy(xpath = "//input[@id='Email']")
     private WebElement emailField;
 
-    @FindBy(xpath = ".//input[@name='password'][contains(@placeholder, '*')]")
+    @FindBy(xpath = "//input[@id='password']")
     private WebElement passwordField;
 
     @FindBy(xpath = "//div[@class='gigya-screen-dialog-close']")
     private WebElement signInPopupCloseButton;
 
-    @FindBy(xpath = "//div[@class='header-store parbase']//span[contains(@class,'global-store__content__section__store-name')]")
-    private WebElement storeButton;
+    @FindBy(xpath = "//button[@title='Ship to']")
+    private WebElement shipToButton;
 
-    @FindBy(xpath = "//div[@class='global-store__popup-wrapper']//div[@class='store-search']")
-    private WebElement storePopup;
+    @FindBy(xpath = "//a[@id='gh-la']")
+    private WebElement storeButton;
 
     @FindBy(xpath = "//input[@class='gh-tb ui-autocomplete-input']")
     private WebElement searchField;
+
+    @FindBy(xpath = "//select[@id='gh-cat']")
+    private WebElement categoriesButton;
 
     @FindBy(xpath = "//input[@id='gh-btn']")
     private WebElement searchButton;
@@ -69,44 +73,43 @@ public class HomePage extends BasePage {
         cartIcon.isDisplayed();
     }
 
-    public String getLanguageButtonText() {
-        return languageButton.getText();
+    public void isCategoriesButtonVisible() {
+        categoriesButton.isDisplayed();
     }
 
-    public void isSignInButtonVisible() {
-        signInButton.isDisplayed();
+    public boolean isSignInButtonVisible() {
+        return registerButton.isDisplayed();
     }
 
-    public void clickSignInButton() {
-        signInButton.click();
+    public void clickRegisterButton() {
+        registerButton.click();
     }
 
-    public void isRegisterButtonVisible() {
-        registerButton.isDisplayed();
+    public boolean isRegisterButtonVisible() {
+        return registerButton.isDisplayed();
     }
 
-    public boolean isEmailFieldVisible() {
-        return emailField.isDisplayed();
+    public WebElement getRegisterPopup() {
+        return registerPopup;
     }
 
-    public boolean isPasswordFieldVisible() {
-        return passwordField.isDisplayed();
+    public WebElement getCaptchaDialog() {
+        return captchaDialog;
     }
 
-    public WebElement getSignInPopup() {
-        return signInPopup;
+    public boolean isEmailAndPasswordFieldVisible() {
+        return emailField.isDisplayed() && passwordField.isDisplayed();
     }
-
     public void clickSignInPopupCloseButton() {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click()", signInPopupCloseButton);
     }
 
     public void clickStoreButton() {
-        storeButton.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()", storeButton);
     }
 
     public boolean isStorePopupVisible() {
-        return storePopup.isDisplayed();
+        return storeButton.isDisplayed();
     }
 
     public void isSearchFieldVisible() {
@@ -117,16 +120,21 @@ public class HomePage extends BasePage {
         cartIcon.click();
     }
 
-    public void clickLanguageButton() {
-        languageButton.click();
-    }
-
     public void enterTextToSearchField(final String searchText) {
         searchField.clear();
         searchField.sendKeys(searchText);
     }
+    public void selectCategoryFromList(final String category ){
+        Select selectObject = new Select(categoriesButton);
+        selectObject.selectByIndex(4);
+       //selectObject.selectByVisibleText(category);
+    }
 
     public void clickSearchButton() {
         searchButton.click();
+    }
+
+    public void clickCategoriesButton() {
+        categoriesButton.click();
     }
 }

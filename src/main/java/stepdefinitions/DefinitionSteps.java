@@ -7,6 +7,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import manager.PageFactoryManager;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.*;
@@ -54,7 +55,6 @@ public class DefinitionSteps {
 
     @And("User checks search field visibility")
     public void checkSearchVisibility() {
-        homePage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
         homePage.isSearchFieldVisible();
     }
 
@@ -68,11 +68,15 @@ public class DefinitionSteps {
         homePage.isCartIconVisible();
     }
 
-    @And("User checks that language switcher is {string}")
-    public void checkLanguage(final String language) {
-        assertTrue(homePage.getLanguageButtonText().equalsIgnoreCase(language));
+    @And("User checks cart icon visibility")
+    public void userChecksCartIconVisibility() {
+        homePage.isCartIconVisible();
     }
 
+    @And("User checks categories button visibility")
+    public void userChecksCategoriesButtonVisibility() {
+        homePage.isCategoriesButtonVisible();
+    }
     @And("User checks register button visibility")
     public void checkRegisterButtonVisibility() {
         homePage.isRegisterButtonVisible();
@@ -83,16 +87,22 @@ public class DefinitionSteps {
         homePage.isSignInButtonVisible();
     }
 
-    @When("User clicks 'Sign In' button")
-    public void clickSignInButton() {
-        homePage.clickSignInButton();
+    @When("User clicks 'Register' button")
+    public void clickRegisterButton() {
+        homePage.clickRegisterButton();
     }
 
-    @Then("User checks email and password fields visibility on sign in popup")
+    @And("User checks captcha popup visibility")
+    public void userChecksCaptchaPopupVisibility() {
+        homePage.waitVisibilityOfElement(DEFAULT_TIMEOUT, homePage.getCaptchaDialog());
+        assertTrue(homePage.getCaptchaDialog().isDisplayed());
+    }
+
+    @Then("User checks email and password fields visibility on register popup")
     public void checkEmailVisibility() {
-        homePage.waitVisibilityOfElement(DEFAULT_TIMEOUT, homePage.getSignInPopup());
-        assertTrue(homePage.isEmailFieldVisible());
-        assertTrue(homePage.isPasswordFieldVisible());
+        homePage.waitVisibilityOfElement(DEFAULT_TIMEOUT, homePage.getRegisterPopup());
+        assertTrue(homePage.isRegisterButtonVisible());
+        assertTrue(homePage.isEmailAndPasswordFieldVisible());
     }
 
     @And("User closes sign in popup")
@@ -100,16 +110,17 @@ public class DefinitionSteps {
         homePage.clickSignInPopupCloseButton();
     }
 
-    @And("User opens store popup")
-    public void openStorePopup() {
+    @And("User clicks store button")
+    public void clickStoreButton() {
+        homePage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
         homePage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
         homePage.clickStoreButton();
     }
 
-    @And("User checks that store popup visible")
+    @And("User checks that store button opens Home page")
     public void checkStorePopupVisibility() {
         homePage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
-        assertTrue(homePage.isStorePopupVisible());
+        assertTrue(driver.getCurrentUrl().contains("ebay.com"));
     }
 
     @And("User opens shopping cart")
@@ -121,17 +132,10 @@ public class DefinitionSteps {
         shoppingCartPage.waitVisibilityOfElement(DEFAULT_TIMEOUT, shoppingCartPage.getShoppingCartTitle());
     }
 
-    @When("User clicks language button")
-    public void clickLanguageButton() {
-        homePage.clickLanguageButton();
-        homePage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
-    }
-
-    @And("User checks that current url contains {string} language")
-    public void checkCurrentUrl(final String language) {
-        homePage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
-        homePage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
-        assertTrue(driver.getCurrentUrl().contains(language));
+    @And("User checks that cart is empty")
+    public void checkCurrentUrl() {
+        shoppingCartPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
+        assertTrue(shoppingCartPage.isCartEmpty());
     }
 
     @And("User checks that shopping cart title visible")
@@ -145,14 +149,23 @@ public class DefinitionSteps {
     }
 
     @And("User clicks search button")
-    public void clickSearchButton() throws InterruptedException {
-        //sleep(1500);//потому что баг, вам так делать нельзя!!!
+    public void clickSearchButton() {
         homePage.clickSearchButton();
+    }
+
+    @And("User clicks Category list")
+    public void userClicksCategoryList() {
+        homePage.clickCategoriesButton();
+    }
+
+    @And("User checks {string} from list")
+    public void userChecksCategoryFromList(final String selectedCategory) {
+        homePage.selectCategoryFromList(selectedCategory);
     }
 
     @And("User clicks 'Add to Cart' button on product")
     public void clickAddToCart() {
-        productPage = pageFactoryManager.getProductPage();
+        productPage=pageFactoryManager.getProductPage();
         productPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
         productPage.waitForAjaxToCompletePdp(DEFAULT_TIMEOUT);
         productPage.clickAddToCartButton();
@@ -160,35 +173,41 @@ public class DefinitionSteps {
 
     @And("User checks that add to cart popup visible")
     public void checkAddToCartPopupVisibility() {
-        productPage.waitVisibilityOfElement(DEFAULT_TIMEOUT, productPage.getAddToCartPopupHeader());
-        assertTrue(productPage.isAddToCartPopupVisible());
+        shoppingCartPage=pageFactoryManager.getShoppingCartPage();
+        shoppingCartPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
+        shoppingCartPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
+        shoppingCartPage.waitVisibilityOfElement(DEFAULT_TIMEOUT, shoppingCartPage.getShoppingCartTitle());
+        assertTrue(shoppingCartPage.isShoppingCartTitleVisible());
     }
 
-    @And("User checks 'Continue Shopping' button visibility")
-    public void checkContinueShoppingButtonVisibility() {
-        productPage.isContinueShoppingButtonVisible();
+    @And("User checks 'Buy It Now' button visibility")
+    public void checkBuyItNowButtonVisibility() {
+        productPage = pageFactoryManager.getProductPage();
+        productPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
+        productPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
+        assertTrue(productPage.isBuyItNowButtonVisible());
     }
 
-    @And("User checks 'Continue to Cart' button visibility")
-    public void checkContinueToCartButtonVisibility() {
-        productPage.isContinueToCartButtonVisible();
-    }
-
-    @And("User checks that add to cart popup header is {string}")
+    @And("User checks that add to cart popup header contains {string}")
     public void checkAddToCartPopupHeader(final String expectedText) {
-        assertEquals(productPage.getAddToCartPopupHeaderText(), expectedText);
+        shoppingCartPage=pageFactoryManager.getShoppingCartPage();
+        shoppingCartPage.waitForPageLoadComplete(DEFAULT_TIMEOUT*2);
+        shoppingCartPage.waitForAjaxToComplete(DEFAULT_TIMEOUT*2);
+        assertTrue(shoppingCartPage.getShoppingCartTitle().getText().contains(expectedText));
     }
 
-    @And("User clicks 'Continue to Cart' button")
-    public void clickContinueToCartButton() {
-        productPage.clickContinueToCartButton();
+    @And("User switches to product list tab")
+    public void SwitchToProductListTab() {
+        ArrayList<String> browserTabs = new ArrayList<String> (driver.getWindowHandles());
+        driver.switchTo().window(browserTabs.get(1)).close();
+        productPage.SwitchTab(0);
     }
 
-    @And("User clicks 'Checkout' button")
+    @And("User checks 'Checkout' button visibility")
     public void clickCheckoutButton() {
         shoppingCartPage = pageFactoryManager.getShoppingCartPage();
-        shoppingCartPage.waitVisibilityOfElement(DEFAULT_TIMEOUT, shoppingCartPage.getShoppingCartItem());
-        shoppingCartPage.clickCheckoutButton();
+        shoppingCartPage.waitVisibilityOfElement(DEFAULT_TIMEOUT, shoppingCartPage.getCheckoutButton());
+        assertTrue(shoppingCartPage.getCheckoutButton().isDisplayed());
     }
 
     @And("User clicks payment cart button")
@@ -214,19 +233,16 @@ public class DefinitionSteps {
         assertTrue(checkoutPage.isCompleteOrderButtonVisible());
     }
 
-    @And("User clicks on first product in goods list")
-    public void clickWishList() {
+    @And("User clicks on {int} product in goods list")
+    public void clickOnProduct(final int productNum) {
         searchResultsPage = pageFactoryManager.getSearchResultsPage();
         itemPage = pageFactoryManager.getItemPage();
         searchResultsPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
         homePage= pageFactoryManager.getHomePage();
         homePage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
         searchResultsPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
-        searchResultsPage.clickGoodsListOnFirstProduct();
+        searchResultsPage.clickGoodsListOnProduct(productNum);
         itemPage.SwitchTab(1);
-        itemPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
-        itemPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
-        itemPage.clickBuyButton();
     }
 
     @And("User checks that amount of products in cart is {string}")
@@ -239,10 +255,10 @@ public class DefinitionSteps {
 
     @After
     public void tearDown() {
-        ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles());
-        for (int s=0; s<tabs2.size(); ++s)
+        ArrayList<String> browserTabs = new ArrayList<String> (driver.getWindowHandles());
+        for (int s=0; s<browserTabs.size(); ++s)
         {
-            driver.switchTo().window(tabs2.get(s)).close();
+            driver.switchTo().window(browserTabs.get(s)).close();
         }
         //driver.close();
     }
@@ -261,6 +277,21 @@ public class DefinitionSteps {
 
     @Then("User checks that quantity of found items equals items per page")
     public void userChecksThatQuantityOfFoundItemsEqualsItemsPerPage() {
+        searchResultsPage=pageFactoryManager.getSearchResultsPage();
+        searchResultsPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
         assertEquals(userGetsItemsPerPage(), userGetsQuantityOfFoundItems());
+    }
+
+    @And("User clicks on 'Add to cart' button")
+    public void userClicksOnBuyButton() {
+            itemPage.clickAddToCartButton();
+    }
+
+    @And("User removes item from cart")
+    public void userRemovesItemFromCart() {
+        shoppingCartPage=pageFactoryManager.getShoppingCartPage();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click()",
+                shoppingCartPage.getRemoveButtons().get(0));
+
     }
 }

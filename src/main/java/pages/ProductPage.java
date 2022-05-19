@@ -7,44 +7,34 @@ import org.openqa.selenium.support.FindBy;
 
 public class ProductPage extends BasePage {
 
-    @FindBy(xpath = "//div[@class='add-to-cart__button-wrapper']/button[contains(@class,'add-to-cart__button')]")
+    @FindBy(xpath = "//a[@id='isCartBtn_btn']")
     private WebElement addToCartButton;
 
-    @FindBy(xpath = "//div[@class='success-popup__shopping-wrapper']//h3[@class='success-popup__success-message']")
+    @FindBy(xpath = "//h1[@class='main-title']")
     private WebElement addToCartPopupHeader;
 
-    @FindBy(xpath = "//a[contains(text(),'Continue shopping')]")
-    private WebElement continueShoppingButton;
-
-    @FindBy(xpath = "//a[contains(text(),'Continue to cart')]")
-    private WebElement continueToCartButton;
+    @FindBy(xpath = "//a[@id='binBtn_btn']")
+    private WebElement buyItNowButton;
 
     public ProductPage(WebDriver driver) {
         super(driver);
     }
 
     public void clickAddToCartButton() {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCartButton);
+        addToCartButton.click();
+        //((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCartButton);
     }
 
     public boolean isAddToCartPopupVisible() {
         return addToCartPopupHeader.isDisplayed();
     }
 
-    public void isContinueShoppingButtonVisible() {
-        continueShoppingButton.isDisplayed();
+    public boolean isBuyItNowButtonVisible() {
+       return buyItNowButton.isDisplayed();
     }
 
     public String getAddToCartPopupHeaderText() {
         return addToCartPopupHeader.getText();
-    }
-
-    public void isContinueToCartButtonVisible() {
-        continueToCartButton.isDisplayed();
-    }
-
-    public void clickContinueToCartButton() {
-        continueToCartButton.click();
     }
 
     public WebElement getAddToCartPopupHeader() {
