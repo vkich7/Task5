@@ -32,4 +32,5 @@ public class PageFactoryManager {
     }
 
     public ItemPage getItemPage() {return new ItemPage(driver);}
+    public LoginPage getLoginPage() {return new LoginPage(driver);}
 }

@@ -4,11 +4,14 @@ package stepdefinitions;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import manager.PageFactoryManager;
+import org.junit.Assert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.*;
 
@@ -30,6 +33,7 @@ public class DefinitionSteps {
     CheckoutPage checkoutPage;
     ItemPage itemPage;
     PageFactoryManager pageFactoryManager;
+    LoginPage loginPage;
 
 
     @Before
@@ -40,7 +44,7 @@ public class DefinitionSteps {
         pageFactoryManager = new PageFactoryManager(driver);
     }
 
-    @And("User opens {string} page")
+    @Given("User opens {string} page")
     public void openPage(final String url) {
         homePage = pageFactoryManager.getHomePage();
         homePage.openHomePage(url);
@@ -295,5 +299,41 @@ public class DefinitionSteps {
     public void userRemovesItemFromCart() {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click()",
                 shoppingCartPage.getRemoveButtons().get(0));
+    }
+
+    @And("User clicks Signin ref")
+    public void userClicksSignInRef() {
+        homePage.clickSigninButton();
+
+    }
+
+    @When("User fills {string} field")
+    public void userFillsLoginField(final String userName) {
+        loginPage=pageFactoryManager.getLoginPage();
+        loginPage.setLoginField(userName);
+
+    }
+
+    @And("User clicks Continue button")
+    public void userClicksContinueButton() {
+        loginPage.clickOnCntinueButton();
+    }
+
+    @Then("User checks error message visibility")
+    public void userChecksErrorMessageVisibility() {
+        Assert.assertTrue(loginPage.isErrorMsgVisible());
+    }
+
+    @Then("User checks all categories have values")
+    public void userChecksAllCategoriesHaveValues() {
+        for(int i=0; i<homePage.getCategories().size(); i++){
+            Assert.assertTrue(homePage.getCategories().get(i).getText().length()>0);
+        }
+    }
+
+    @And("User inputs {string} in loginField")
+    public void userInputUserNameInLoginField(String userName) {
+        loginPage=pageFactoryManager.getLoginPage();
+        loginPage.setLoginField(userName);
     }
 }

@@ -94,3 +94,22 @@ Feature: Smoke
       | homePage                | keyword  | category          | itemsCount | prodNum1 | prodNum2 | nextItemsCount |
       | https://www.ebay.com    | king     | Books & Magazines | 2 items    | 1        | 5        | 1 item         |
 
+  Scenario Outline: Make sure all the Categories are fulfilled
+    Given User opens '<homePage>' page
+    When User clicks Category list
+    Then User checks all categories have values
+
+    Examples:
+      | homePage              |
+      | https://www.ebay.com  |
+
+
+Scenario Outline: Hello
+  Given User opens '<homePage>' page
+  And User clicks Signin ref
+  And User inputs '<userName>' in loginField
+  When User clicks Continue button
+  Then User checks error message visibility
+  Examples:
+    | homePage              | userName     |
+    | https://www.ebay.com  | milkFakeUser |

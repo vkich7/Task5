@@ -6,6 +6,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.List;
+
 public class HomePage extends BasePage {
 
     @FindBy(xpath = "//header[@id='gh']")
@@ -49,6 +51,9 @@ public class HomePage extends BasePage {
 
     @FindBy(xpath = "//select[@id='gh-cat']")
     private WebElement categoriesButton;
+
+    @FindBy(xpath = "//select[@id='gh-cat']")
+    private List<WebElement> selectAllCategories;
 
     @FindBy(xpath = "//input[@id='gh-btn']")
     private WebElement searchButton;
@@ -133,8 +138,13 @@ public class HomePage extends BasePage {
     public void clickSearchButton() {
         searchButton.click();
     }
-
+    public void clickSigninButton() {
+        signInButton.click();
+    }
     public void clickCategoriesButton() {
         categoriesButton.click();
+    }
+    public List<WebElement> getCategories(){
+        return selectAllCategories;
     }
 }
