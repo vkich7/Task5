@@ -35,7 +35,7 @@ Feature: Smoke
 
     Examples:
       | homePage              | keyword              | amountOfProducts | first |
-      | https://www.ebay.com  | i7 laptop hp         | 1                | 1     |
+      | https://www.ebay.com  | i9 laptop hp         | 1                | 1     |
 
   Scenario Outline: Check that items per page appears according to the quantity selected by
     Given User opens '<homePage>' page
@@ -93,3 +93,4 @@ Feature: Smoke
     Examples:
       | homePage                | keyword  | category          | itemsCount | prodNum1 | prodNum2 | nextItemsCount |
       | https://www.ebay.com    | king     | Books & Magazines | 2 items    | 1        | 5        | 1 item         |
+

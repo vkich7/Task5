@@ -43,9 +43,9 @@ public class BasePage {
         wait.until(ExpectedConditions.visibilityOf(element));
     }
 
-    //public void implicitWait(int seconds) {
-        //driver.manage().timeouts().implicitlyWait(seconds, TimeUnit.SECONDS);
-    //}
+    public void implicitWait(int seconds) {
+        driver.manage().timeouts().implicitlyWait(seconds, TimeUnit.SECONDS);
+    }
 
     public void SwitchTab(int tabNumber){
         ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles());

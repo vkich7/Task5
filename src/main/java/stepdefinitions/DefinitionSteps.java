@@ -165,10 +165,10 @@ public class DefinitionSteps {
 
     @And("User clicks 'Add to Cart' button on product")
     public void clickAddToCart() {
-        productPage=pageFactoryManager.getProductPage();
-        productPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
-        productPage.waitForAjaxToCompletePdp(DEFAULT_TIMEOUT);
-        productPage.clickAddToCartButton();
+        itemPage=pageFactoryManager.getItemPage();
+        itemPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
+        itemPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
+        itemPage.clickAddToCartButton();
     }
 
     @And("User checks that add to cart popup visible")
@@ -183,17 +183,21 @@ public class DefinitionSteps {
     @And("User checks 'Buy It Now' button visibility")
     public void checkBuyItNowButtonVisibility() {
         productPage = pageFactoryManager.getProductPage();
-        productPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
-        productPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
+        productPage.waitForPageLoadComplete(DEFAULT_TIMEOUT*2);
+        productPage.waitForAjaxToComplete(DEFAULT_TIMEOUT*2);
+        productPage.waitForAjaxToCompletePdp(DEFAULT_TIMEOUT);
         assertTrue(productPage.isBuyItNowButtonVisible());
     }
 
     @And("User checks that add to cart popup header contains {string}")
     public void checkAddToCartPopupHeader(final String expectedText) {
-        shoppingCartPage=pageFactoryManager.getShoppingCartPage();
+        driver.navigate().refresh();
         shoppingCartPage.waitForPageLoadComplete(DEFAULT_TIMEOUT*2);
         shoppingCartPage.waitForAjaxToComplete(DEFAULT_TIMEOUT*2);
-        assertTrue(shoppingCartPage.getShoppingCartTitle().getText().contains(expectedText));
+        String actualTitle = shoppingCartPage.getShoppingCartTitle().getText();
+        System.out.print("!!!actualTitle: " );
+        System.out.println(actualTitle );
+        assertTrue(actualTitle.contains(expectedText));
     }
 
     @And("User switches to product list tab")
@@ -289,9 +293,7 @@ public class DefinitionSteps {
 
     @And("User removes item from cart")
     public void userRemovesItemFromCart() {
-        shoppingCartPage=pageFactoryManager.getShoppingCartPage();
         ((JavascriptExecutor) driver).executeScript("arguments[0].click()",
                 shoppingCartPage.getRemoveButtons().get(0));
-
     }
 }
