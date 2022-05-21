@@ -13,6 +13,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 import pages.*;
 
 import java.util.ArrayList;
@@ -97,15 +98,16 @@ public class DefinitionSteps {
     }
 
     @And("User checks captcha popup visibility")
-    public void userChecksCaptchaPopupVisibility() {
-        homePage.waitVisibilityOfElement(DEFAULT_TIMEOUT, homePage.getCaptchaDialog());
-        assertTrue(homePage.getCaptchaDialog().isDisplayed());
-    }
+    //public void userChecksCaptchaPopupVisibility() {
+        //homePage.waitVisibilityOfElement(DEFAULT_TIMEOUT, homePage.getCaptchaDialog());
+        //assertTrue(homePage.getCaptchaDialog().isDisplayed());
+    //}
 
     @Then("User checks email and password fields visibility on register popup")
     public void checkEmailVisibility() {
+        homePage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
         homePage.waitVisibilityOfElement(DEFAULT_TIMEOUT, homePage.getRegisterPopup());
-        assertTrue(homePage.isRegisterButtonVisible());
+        assertTrue(homePage.isRegisterSubmitButtonVisible());
         assertTrue(homePage.isEmailAndPasswordFieldVisible());
     }
 
@@ -321,13 +323,16 @@ public class DefinitionSteps {
 
     @Then("User checks error message visibility")
     public void userChecksErrorMessageVisibility() {
+        loginPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
+        loginPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
         Assert.assertTrue(loginPage.isErrorMsgVisible());
     }
 
     @Then("User checks all categories have values")
     public void userChecksAllCategoriesHaveValues() {
-        for(int i=0; i<homePage.getCategories().size(); i++){
-            Assert.assertTrue(homePage.getCategories().get(i).getText().length()>0);
+        Select select = homePage.getCategoriesSelect();
+        for(int i=0; i<select.getOptions().size(); i++){
+            Assert.assertTrue(select.getOptions().get(i).getText().length()>0 );
         }
     }
 
@@ -336,4 +341,27 @@ public class DefinitionSteps {
         loginPage=pageFactoryManager.getLoginPage();
         loginPage.setLoginField(userName);
     }
+
+    @And("User clicks Advanced button")
+    public void userClicksAdvancedButton() {
+        homePage.clickAdvancedButton();
+    }
+
+    @And("User clicks Items per page combobox")
+    public void userClicksItemsPerPageCombobox() {
+        //homePage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
+        //homePage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
+        homePage.clickItemsPerPage();
+    }
+
+    @When("User selects {string} items option")
+    public void userSelectsItemsPerPageItemsOption(String itemsPerPage) {
+        homePage.selectItemsPerPage(itemsPerPage);
+    }
+
+    @Then("User checks that selected option equals {string}")
+    public void userChecksThatSelectionComplete(final String selOpt) {
+        Assert.assertEquals(homePage.getItemsPerPageValue(), selOpt);
+    }
+
 }

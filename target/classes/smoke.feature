@@ -13,7 +13,7 @@ Feature: Smoke
     And User checks search field visibility
     And User checks categories button visibility
     When User clicks 'Register' button
-    And User checks captcha popup visibility
+    And User checks email and password fields visibility on register popup
     And User clicks store button
     And User checks that store button opens Home page
     And User opens shopping cart
@@ -104,7 +104,7 @@ Feature: Smoke
       | https://www.ebay.com  |
 
 
-Scenario Outline: Hello
+Scenario Outline: Make sure fictional user is not logged in
   Given User opens '<homePage>' page
   And User clicks Signin ref
   And User inputs '<userName>' in loginField
@@ -113,3 +113,19 @@ Scenario Outline: Hello
   Examples:
     | homePage              | userName     |
     | https://www.ebay.com  | milkFakeUser |
+
+Scenario Outline: Check Advanced Search options
+  Given User opens '<homePage>' page
+  And User makes search by keyword '<keyword>'
+  And User clicks Advanced button
+  And User clicks Items per page combobox
+  When User selects '<itemsPerPage>' items option
+  Then User checks that selected option equals '<itemsPerPage>'
+
+  Examples:
+    | homePage              | keyword   |  itemsPerPage |
+    | https://www.ebay.com  | milk      |  120          |
+    | https://www.ebay.com  | milk      |  240          |
+    | https://www.ebay.com  | milk      |  60           |
+
+  Scenario Outline: Check

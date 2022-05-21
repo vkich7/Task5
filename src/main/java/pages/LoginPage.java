@@ -9,7 +9,7 @@ public class LoginPage extends BasePage{
     private WebElement loginField;
     @FindBy(xpath = "//button[@id='signin-continue-btn']")
     private WebElement continueButton;
-    @FindBy(xpath = "p[@id='errormsg']")
+    @FindBy(xpath = "//p[@id='errormsg']")
     private WebElement errorMsg;
 
     public LoginPage(WebDriver driver) {

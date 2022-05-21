@@ -25,11 +25,17 @@ public class HomePage extends BasePage {
     @FindBy(xpath = "//span[@id='gh-ug-flex']/a[contains(text(), 'register')]")
     private WebElement registerButton;
 
+    @FindBy(xpath = "//button[@id='EMAIL_REG_FORM_SUBMIT']")
+    private WebElement registerSubmitButton;
+
     @FindBy(xpath = "//h1[contains(text(), 'Create an account')]")
     private WebElement registerPopup;
 
-    @FindBy(xpath = "//div[@class='target-icaptcha-slot']")
-    private WebElement captchaDialog;
+    @FindBy(xpath = "//a[@id='gh-as-a']")
+   private WebElement advancedButton;
+
+    @FindBy(xpath = "//select[@name='_ipg']")
+    private WebElement itemsPerPage;
 
     @FindBy(xpath = "//input[@id='Email']")
     private WebElement emailField;
@@ -98,9 +104,9 @@ public class HomePage extends BasePage {
         return registerPopup;
     }
 
-    public WebElement getCaptchaDialog() {
-        return captchaDialog;
-    }
+    //public WebElement getCaptchaDialog() {
+        //return captchaDialog;
+    //}
 
     public boolean isEmailAndPasswordFieldVisible() {
         return emailField.isDisplayed() && passwordField.isDisplayed();
@@ -144,7 +150,29 @@ public class HomePage extends BasePage {
     public void clickCategoriesButton() {
         categoriesButton.click();
     }
+    public void clickAdvancedButton() {
+        advancedButton.click();
+    }
+    public void clickItemsPerPage() {
+        itemsPerPage.click();
+    }
+    public void selectItemsPerPage(String ipp){
+        Select select = new Select(itemsPerPage);
+        select.selectByValue(ipp);
+    }
+    public String getItemsPerPageValue(){
+        Select select = new Select(itemsPerPage);
+        return select.getFirstSelectedOption().getText();
+    }
     public List<WebElement> getCategories(){
         return selectAllCategories;
+    }
+
+    public Select getCategoriesSelect(){
+        return new Select((categoriesButton));
+    }
+
+    public boolean isRegisterSubmitButtonVisible() {
+        return registerSubmitButton.isDisplayed();
     }
 }
