@@ -17,6 +17,8 @@ import org.openqa.selenium.support.ui.Select;
 import pages.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import static io.github.bonigarcia.wdm.WebDriverManager.chromedriver;
 import static org.junit.Assert.assertEquals;
@@ -31,7 +33,6 @@ public class DefinitionSteps {
     ShoppingCartPage shoppingCartPage;
     SearchResultsPage searchResultsPage;
     ProductPage productPage;
-    CheckoutPage checkoutPage;
     ItemPage itemPage;
     PageFactoryManager pageFactoryManager;
     LoginPage loginPage;
@@ -197,9 +198,11 @@ public class DefinitionSteps {
 
     @And("User checks that add to cart popup header contains {string}")
     public void checkAddToCartPopupHeader(final String expectedText) {
+        shoppingCartPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
+        shoppingCartPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
         driver.navigate().refresh();
-        shoppingCartPage.waitForPageLoadComplete(DEFAULT_TIMEOUT*2);
-        shoppingCartPage.waitForAjaxToComplete(DEFAULT_TIMEOUT*2);
+        shoppingCartPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
+        shoppingCartPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
         String actualTitle = shoppingCartPage.getShoppingCartTitle().getText();
         System.out.print("!!!actualTitle: " );
         System.out.println(actualTitle );
@@ -218,29 +221,6 @@ public class DefinitionSteps {
         shoppingCartPage = pageFactoryManager.getShoppingCartPage();
         shoppingCartPage.waitVisibilityOfElement(DEFAULT_TIMEOUT, shoppingCartPage.getCheckoutButton());
         assertTrue(shoppingCartPage.getCheckoutButton().isDisplayed());
-    }
-
-    @And("User clicks payment cart button")
-    public void clickPaymentCartButton() {
-        checkoutPage = pageFactoryManager.getCheckoutPage();
-        checkoutPage.waitForPageLoadComplete(DEFAULT_TIMEOUT);
-        checkoutPage.waitForAjaxToComplete(DEFAULT_TIMEOUT);
-        checkoutPage.clickPaymentCartButton();
-    }
-
-    @And("User checks payment form visibility")
-    public void checkPaymentFormVisibility() {
-        assertTrue(checkoutPage.isPaymentFormVisible());
-    }
-
-    @And("User checks billing form visibility")
-    public void checkBillingFormVisibility() {
-        assertTrue(checkoutPage.isBillingFormVisible());
-    }
-
-    @And("User checks 'Complete Order' button visibility")
-    public void checkCompleteOrderButtonVisibility() {
-        assertTrue(checkoutPage.isCompleteOrderButtonVisible());
     }
 
     @And("User clicks on {int} product in goods list")
@@ -301,6 +281,7 @@ public class DefinitionSteps {
     public void userRemovesItemFromCart() {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click()",
                 shoppingCartPage.getRemoveButtons().get(0));
+        driver.navigate().refresh();
     }
 
     @And("User clicks Signin ref")
@@ -364,4 +345,41 @@ public class DefinitionSteps {
         Assert.assertEquals(homePage.getItemsPerPageValue(), selOpt);
     }
 
+    @And("User types low price {string} in form field")
+    public void userTypesLowPricePriceFromInFormField(String lp) {
+        searchResultsPage=pageFactoryManager.getSearchResultsPage();
+        searchResultsPage.inputLowPrice(lp);
+    }
+
+    @And("User types hi price {string} in form field")
+    public void userTypesHiPricePriceToInFormField(String hp) {
+        searchResultsPage.inputHiPrice(hp);
+    }
+
+    @When("User clicks search button on the page")
+    public void userClicksSearchButtonOnThePage() {
+        searchResultsPage.searchButtonClick();
+    }
+
+    @Then("User checks all the found items have price between {string} and {string}")
+    public void userChecksAllTheFoundItemsHavePriceBetweenPriceFromAndPriceTo(String lo, String hi) {
+        List<Float> res = searchResultsPage.getPriceListResult();
+        float loPrice = Float.parseFloat(lo);
+        float hiPrice = Float.parseFloat(hi);
+        for (float x:res) {
+            Assert.assertTrue(x>=loPrice && x <=hiPrice);
+        }
+    }
+
+    @And("User inputs {string} to form field")
+    public void userInputsKeywordToFormField(String keyword) {
+        searchResultsPage.inputKeyword(keyword);
+    }
+
+    @When("User checks")
+    public void userChecks() {
+        String regex = "[0-9]+[\\.]?[0-9]*";
+        System.out.println(Pattern.matches(regex, "$1231wwew 3454 uyuy"));
+        //filter(s -> s.matches("^-?\\d+$"))
+    }
 }

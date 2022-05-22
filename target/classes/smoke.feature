@@ -50,7 +50,7 @@ Feature: Smoke
       | https://www.ebay.com  | ball     |
 
 
-  Scenario Outline: Check add two products to cart
+  Scenario Outline: Check add '<itemsCount>' (products) to cart
     Given User opens '<homePage>' page
     And User checks search field visibility
     When User makes search by keyword '<keyword>'
@@ -114,7 +114,7 @@ Scenario Outline: Make sure fictional user is not logged in
     | homePage              | userName     |
     | https://www.ebay.com  | milkFakeUser |
 
-Scenario Outline: Check Advanced Search options
+Scenario Outline: Check items per page options in Advanced Search
   Given User opens '<homePage>' page
   And User makes search by keyword '<keyword>'
   And User clicks Advanced button
@@ -128,4 +128,14 @@ Scenario Outline: Check Advanced Search options
     | https://www.ebay.com  | milk      |  240          |
     | https://www.ebay.com  | milk      |  60           |
 
-  Scenario Outline: Check
+  Scenario Outline: Check price range option in Advanced Search
+    Given User opens '<advsearch>' page
+    And User types low price '<priceFrom>' in form field
+    And User types hi price '<priceTo>' in form field
+    And  User inputs '<keyword>' to form field
+    When User clicks search button on the page
+    Then User checks all the found items have price between '<priceFrom>' and '<priceTo>'
+
+    Examples:
+      | advsearch                              | keyword   |  priceFrom |  priceTo  |
+      |https://www.ebay.com/sch/ebayadvsearch  | rubin     |  10        |  20       |
